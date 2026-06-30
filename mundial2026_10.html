@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏆 Apuesta Mundial 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;600;700&display=swap');
+  :root {
+    --gold:#FFD93D; --gold-dim:#E0A800; --green:#06A94D; --green-mx:#008C45; --red:#E8112D; --red-mx:#CE1126;
+    --blue-dark:#0B1E2D; --blue-mid:#0F2A3F; --blue-light:#16466A;
+    --accent:#00E5B0; --silver:#C0C0C0; --bronze:#CD7F32;
+    --pink:#FF2D78; --purple:#7B2FF7; --orange:#FF7A00;
+    --text:#F2F7FC; --text-dim:#7FA0BC; --card-bg:rgba(15,42,63,0.88);
+    --border:rgba(0,229,176,0.18);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--blue-dark); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; overflow-x:hidden; }
+  body::before { content:''; position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse at 15% 15%, rgba(6,169,77,0.10) 0%, transparent 45%),
+      radial-gradient(ellipse at 85% 20%, rgba(232,17,45,0.09) 0%, transparent 45%),
+      radial-gradient(ellipse at 50% 90%, rgba(255,217,61,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(0,229,176,0.06) 0%, transparent 50%),
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.012) 60px, rgba(255,255,255,0.012) 61px),
+      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.012) 60px, rgba(255,255,255,0.012) 61px);
+    pointer-events:none; z-index:0; }
+  header { position:relative; z-index:10; text-align:center; padding:32px 20px 24px; border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg, rgba(11,30,45,0.98) 0%, rgba(11,30,45,0.6) 100%); overflow:hidden; }
+  header::after { content:''; position:absolute; bottom:0; left:0; right:0; height:4px;
+    background:linear-gradient(90deg, var(--green-mx) 0%, var(--green-mx) 33%, #fff 33%, #fff 66%, var(--red-mx) 66%, var(--red-mx) 100%); }
+  .header-badge { display:inline-block;
+    background:linear-gradient(90deg, var(--green) 0%, #5BE584 25%, #FFFFFF 50%, #FF6B7A 75%, var(--red) 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-family:'Bebas Neue',cursive;
+    font-size:clamp(40px,8vw,76px); letter-spacing:4px; line-height:1; filter:drop-shadow(0 0 24px rgba(255,217,61,0.35)); }
+  .header-sub { font-size:12px; color:var(--text-dim); letter-spacing:2.5px; text-transform:uppercase; margin-top:6px; }
+  .progress-pill { display:inline-flex; align-items:center; gap:8px;
+    background:linear-gradient(90deg, rgba(6,169,77,0.15), rgba(232,17,45,0.15));
+    border:1px solid rgba(0,229,176,0.4); color:var(--accent); font-size:11px; font-weight:600;
+    letter-spacing:1.5px; text-transform:uppercase; padding:6px 16px; border-radius:20px; margin-top:14px; }
+  .tabs { display:flex; justify-content:center; gap:8px; padding:18px 16px; flex-wrap:wrap; position:relative; z-index:10; }
+  .tab-btn { background:var(--card-bg); border:1px solid var(--border); color:var(--text-dim); padding:9px 18px;
+    border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; }
+  .tab-btn:hover { border-color:var(--accent); color:var(--accent); }
+  .tab-btn.active { background:linear-gradient(135deg, rgba(6,169,77,0.25), rgba(0,229,176,0.2)); border-color:var(--accent); color:var(--accent); }
+  .section { display:none; max-width:1300px; margin:0 auto; padding:0 16px 60px; position:relative; z-index:10; }
+  .section.active { display:block; }
+  .section-title { font-family:'Bebas Neue',cursive; font-size:30px; letter-spacing:3px; margin-bottom:6px;
+    background:linear-gradient(90deg, var(--green) 0%, #FFFFFF 50%, var(--red) 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .section-desc { font-size:13px; color:var(--text-dim); margin-bottom:22px; }
+  .trophy-row { display:flex; align-items:center; gap:14px; margin-bottom:20px; flex-wrap:wrap; }
+  .legend-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--text-dim); }
+  .legend-dot { width:8px; height:8px; border-radius:50%; }
+  .ld-qual{background:var(--green);} .ld-maybe{background:#FFA500;} .ld-out{background:var(--red);}
+  .ranking-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+  .player-card { background:var(--card-bg); border:1px solid var(--border); border-radius:14px; padding:20px;
+    transition:transform 0.2s,border-color 0.2s; backdrop-filter:blur(8px); }
+  .player-card:hover { transform:translateY(-3px); border-color:rgba(0,212,255,0.35); }
+  .player-card.rank-1 { border-color:var(--green); background:linear-gradient(135deg,rgba(15,42,63,0.92),rgba(6,169,77,0.18)); box-shadow:0 0 24px rgba(6,169,77,0.15); }
+  .player-card.rank-2 { border-color:var(--silver); background:linear-gradient(135deg,rgba(15,42,63,0.92),rgba(30,35,45,0.4)); }
+  .player-card.rank-3 { border-color:var(--bronze); background:linear-gradient(135deg,rgba(15,42,63,0.92),rgba(60,35,10,0.35)); }
+  .card-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px; }
+  .rank-badge { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue',cursive; font-size:20px; flex-shrink:0; }
+  .rank-1 .rank-badge{background:linear-gradient(135deg,var(--green),var(--green-mx));color:#fff;}
+  .rank-2 .rank-badge{background:linear-gradient(135deg,#CCC,#888);color:#000;}
+  .rank-3 .rank-badge{background:linear-gradient(135deg,var(--bronze),#8B5A2B);color:#FFF;}
+  .rank-other .rank-badge{background:rgba(255,255,255,0.08);color:var(--text-dim);}
+  .player-name { font-size:20px; font-weight:700; letter-spacing:0.5px; }
+  .avg-score { text-align:right; }
+  .avg-number { font-family:'Roboto Mono',monospace; font-size:28px; font-weight:600; color:var(--accent); }
+  .rank-1 .avg-number{color:var(--green);} .rank-2 .avg-number{color:var(--silver);} .rank-3 .avg-number{color:var(--bronze);}
+  .avg-label { font-size:10px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; }
+  .team-pills { display:flex; flex-direction:column; gap:7px; }
+  .team-pill { display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.04); border-radius:8px; padding:7px 10px; font-size:13px; flex-wrap:wrap; }
+  .team-pill.pending { opacity:0.6; }
+  .team-pill.pending .team-name-pill { color:var(--text-dim); }
+  .tier-icon{font-size:14px;flex-shrink:0;} .team-flag{font-size:18px;flex-shrink:0;}
+  .team-name-pill{flex:1;font-weight:500;}
+  .qual-badge { font-size:9px; font-weight:700; letter-spacing:0.3px; padding:2px 6px; border-radius:5px; white-space:nowrap; margin-right:2px; }
+  .q-in { background:rgba(6,169,77,0.18); color:#3DDC84; border:1px solid rgba(6,169,77,0.45); }
+  .q-out { background:rgba(232,17,45,0.15); color:#FF6B7A; border:1px solid rgba(232,17,45,0.4); }
+  .q-live { background:rgba(255,184,0,0.13); color:#FFB800; border:1px solid rgba(255,184,0,0.4); }
+  .team-pos { font-family:'Roboto Mono',monospace; font-size:12px; color:var(--text-dim); background:rgba(0,0,0,0.3); padding:2px 7px; border-radius:4px; white-space:nowrap; }
+  .team-pos.in-top{color:var(--green);} .team-pos.eliminated{color:var(--red);opacity:0.8;}
+  .team-pos.estimated{color:#FFA500;background:rgba(255,165,0,0.08);border:1px dashed rgba(255,165,0,0.4);font-style:italic;}
+  .confidence { margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.06); }
+  .confidence-label { display:flex; justify-content:space-between; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); margin-bottom:6px; }
+  .confidence-track { height:5px; border-radius:3px; background:rgba(255,255,255,0.07); overflow:hidden; }
+  .confidence-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,#FFA500,var(--green)); transition:width 0.4s; }
+  .confidence-note { font-size:10px; color:#FFA500; margin-top:5px; }
+  .groups-container { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:16px; }
+  .group-card { background:var(--card-bg); border:1px solid var(--border); border-radius:14px; overflow:hidden; backdrop-filter:blur(8px); }
+  .group-header { background:linear-gradient(90deg,rgba(6,169,77,0.25),rgba(0,229,176,0.12)); padding:12px 16px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border); }
+  .group-letter { font-family:'Bebas Neue',cursive; font-size:28px; color:var(--accent); line-height:1; width:26px; flex-shrink:0; }
+  .group-sub { font-size:10px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; }
+  .group-table { width:100%; border-collapse:collapse; }
+  .group-table thead tr { background:rgba(0,0,0,0.25); }
+  .group-table th { font-size:9px; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); padding:7px 6px; text-align:center; font-weight:600; }
+  .group-table th:first-child { text-align:left; padding-left:14px; }
+  .group-table td { padding:9px 6px; font-size:13px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.04); }
+  .group-table td:first-child { text-align:left; padding-left:14px; }
+  .group-table tr:last-child td { border-bottom:none; }
+  .group-table tbody tr.qual td { background:rgba(0,200,83,0.05); }
+  .team-cell { display:flex; align-items:center; gap:7px; }
+  .flag-sm{font-size:16px;} .team-cell-name{font-weight:500;font-size:12px;}
+  .pts-cell { font-family:'Roboto Mono',monospace; font-weight:700; font-size:14px; }
+  .pos-num { font-family:'Roboto Mono',monospace; color:var(--text-dim); font-size:11px; min-width:24px; display:inline-block; }
+  .qual-dot { display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--green); margin-right:3px; vertical-align:middle; }
+  .matchday-block { margin-bottom:28px; }
+  .matchday-title { font-family:'Bebas Neue',cursive; font-size:22px; letter-spacing:2px; color:var(--accent); margin-bottom:4px; padding-left:2px; }
+  .matchday-date { font-size:11px; color:var(--text-dim); margin-bottom:14px; padding-left:2px; letter-spacing:1px; }
+  .match-row { display:flex; align-items:center; gap:8px; background:var(--card-bg); border:1px solid var(--border);
+    border-radius:10px; padding:10px 12px; margin-bottom:8px; flex-wrap:nowrap; }
+  .match-grp { font-size:10px; font-weight:700; color:var(--accent); background:rgba(0,212,255,0.1); border-radius:5px; padding:2px 6px; flex-shrink:0; }
+  .match-team { display:flex; align-items:center; gap:5px; flex:1; min-width:0; }
+  .match-team.home { justify-content:flex-end; text-align:right; }
+  .match-team.away { justify-content:flex-start; }
+  .match-team .nm { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .match-team .fl { font-size:17px; flex-shrink:0; }
+  .score-input { width:38px; height:38px; text-align:center; font-family:'Roboto Mono',monospace; font-size:17px;
+    font-weight:700; color:var(--text); background:rgba(0,0,0,0.35); border:1px solid var(--border); border-radius:8px;
+    flex-shrink:0; -moz-appearance:textfield; }
+  .score-input::-webkit-outer-spin-button, .score-input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  .score-input:focus { outline:none; border-color:var(--accent); background:rgba(0,212,255,0.08); }
+  .score-input.filled { border-color:rgba(0,200,83,0.5); color:var(--green); }
+  .score-sep { color:var(--text-dim); font-size:13px; flex-shrink:0; }
+  .actions-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px; position:sticky; top:0; z-index:20;
+    padding:12px 0; background:linear-gradient(180deg, var(--blue-dark) 60%, transparent); }
+  .btn { border:none; border-radius:9px; padding:11px 20px; font-size:13px; font-weight:700; letter-spacing:0.5px; cursor:pointer; transition:all 0.2s; }
+  .btn-primary { background:linear-gradient(135deg,var(--green) 0%, var(--green-mx) 100%); color:#fff; box-shadow:0 4px 14px rgba(6,169,77,0.35); }
+  .btn-primary:hover { filter:brightness(1.1); }
+  .btn-ghost { background:rgba(255,255,255,0.06); color:var(--text-dim); border:1px solid var(--border); }
+  .btn-ghost:hover { color:var(--red); border-color:rgba(255,61,61,0.4); }
+  .save-hint { font-size:11px; color:var(--green); align-self:center; }
+  footer { text-align:center; padding:22px; font-size:11px; color:var(--text-dim); border-top:1px solid var(--border); position:relative; z-index:10; letter-spacing:1px; }
+  .t48 { width:100%; border-collapse:collapse; background:var(--card-bg); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+  .t48 thead tr { background:rgba(0,0,0,0.3); }
+  .t48 th { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); padding:10px 8px; text-align:center; font-weight:600; }
+  .t48 th:nth-child(2){ text-align:left; }
+  .t48 td { padding:9px 8px; font-size:13px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.04); }
+  .t48 td:nth-child(2){ text-align:left; }
+  .t48 tr:last-child td { border-bottom:none; }
+  .t48 .gp { font-family:'Roboto Mono',monospace; font-weight:700; font-size:14px; color:var(--accent); }
+  .t48 .gp-top { color:var(--green); }
+  .t48 .tnm { display:flex; align-items:center; gap:8px; }
+  .t48 .tnm .fl { font-size:17px; }
+  .t48 .tnm .nm { font-weight:500; }
+  .t48 .grp-tag { font-size:9px; color:var(--text-dim); background:rgba(255,255,255,0.06); padding:1px 6px; border-radius:4px; margin-left:4px; }
+  .t48 .pts { font-family:'Roboto Mono',monospace; font-weight:700; }
+  .t48 tr.cut td { border-bottom:2px solid rgba(0,200,83,0.4); }
+  /* BRACKET */
+  .bracket-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; }
+  .ko-match { background:var(--card-bg); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  .ko-head { background:linear-gradient(90deg,rgba(6,169,77,0.2),rgba(0,229,176,0.08)); padding:7px 12px; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--accent); font-weight:700; display:flex; justify-content:space-between; align-items:center; }
+  .ko-date { color:var(--text-dim); font-size:9px; font-weight:500; }
+  .ko-team { display:flex; align-items:center; gap:9px; padding:11px 13px; border-bottom:1px solid rgba(255,255,255,0.05); }
+  .ko-team:last-child { border-bottom:none; }
+  .ko-team .fl { font-size:20px; flex-shrink:0; }
+  .ko-team .info { flex:1; min-width:0; }
+  .ko-team .nm { font-weight:600; font-size:14px; }
+  .ko-team .owner { font-size:10px; color:var(--text-dim); margin-top:1px; }
+  .ko-team .owner b { color:var(--accent); font-weight:600; }
+  .ko-team .alive { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .ko-team .alive.yes { background:var(--green); box-shadow:0 0 8px rgba(6,169,77,0.5); }
+  .ko-team .alive.no { background:var(--text-dim); opacity:0.3; }
+  .ko-team.tbd { opacity:0.5; font-style:italic; }
+  .ko-team.tbd .nm { color:var(--text-dim); font-weight:500; }
+  .ko-vs { text-align:center; font-size:9px; color:var(--text-dim); padding:3px 0; letter-spacing:2px; background:rgba(0,0,0,0.2); }
+  .bracket-note { background:rgba(255,184,0,0.08); border:1px solid rgba(255,184,0,0.3); border-radius:10px; padding:12px 16px; margin-bottom:20px; font-size:12px; color:#FFB800; }
+  .ko-score { font-family:'Roboto Mono',monospace; font-weight:700; font-size:18px; margin-left:8px; flex-shrink:0; }
+  .ko-score.win { color:var(--green); }
+  .ko-score.lose { color:var(--text-dim); }
+  .ko-team.ko-win { background:rgba(6,169,77,0.08); }
+  .ko-team.ko-elim { opacity:0.45; }
+  .ko-team.ko-elim .nm { text-decoration:line-through; color:var(--text-dim); }
+  @media (max-width:480px) {
+    .ranking-grid, .groups-container { grid-template-columns:1fr; }
+    .avg-number{font-size:22px;} .player-name{font-size:17px;}
+    .match-team .nm { font-size:11px; }
+    .match-grp { display:none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-badge">⚽ MUNDIAL 2026</div>
+  <div class="header-sub">Apuesta entre amigos · USA / Canadá / México · ROUND OF 32 (4 de 16 jugados)</div>
+  <div class="progress-pill" id="progress-pill">⏱ Captura los resultados para empezar</div>
+</header>
+<nav class="tabs">
+  <button class="tab-btn active" onclick="showTab('apuesta',this)">🏅 Apuesta</button>
+  <button class="tab-btn" onclick="showTab('grupos',this)">📊 Grupos</button>
+  <button class="tab-btn" onclick="showTab('tabla48',this)">🌍 Tabla 48</button>
+  <button class="tab-btn" onclick="showTab('bracket',this)">🏆 Eliminatorias</button>
+</nav>
+<section id="apuesta" class="section active">
+  <div class="trophy-row">
+    <span class="legend-item"><span class="legend-dot ld-qual"></span> Posición real (ya jugó)</span>
+    <span class="legend-item"><span class="legend-dot ld-maybe"></span> Estimado (ranking FIFA)</span>
+    <span class="legend-item"><span class="legend-dot ld-out"></span> Eliminado</span>
+  </div>
+  <div style="font-size:12px;color:var(--text-dim);margin-bottom:20px;">Promedio = suma de los 4 puestos globales (1-48) ÷ 4. Menor es mejor. Cada equipo muestra su lugar en la tabla de 48. La barra indica cuántos de los 4 ya jugaron.</div>
+  <div id="ranking-grid" class="ranking-grid"></div>
+</section>
+<section id="grupos" class="section">
+  <div class="section-title">GRUPOS A – L</div>
+  <div class="section-desc">Las tablas se calculan solas con los resultados que captures · 2 primeros + 8 mejores terceros avanzan</div>
+  <div id="groups-container" class="groups-container"></div>
+</section>
+<section id="bracket" class="section">
+  <div class="section-title">FASE ELIMINATORIA · ROUND OF 32</div>
+  <div class="section-desc">Los 32 clasificados y sus cruces. Cada equipo muestra a qué amigo pertenece. 🟢 = sigue vivo en la apuesta.</div>
+  <div id="bracket-container"></div>
+</section>
+<section id="tabla48" class="section">
+  <div class="section-title">TABLA GLOBAL · 48 EQUIPOS</div>
+  <div class="section-desc">Ordenados por puntos → diferencia de goles → goles a favor → ranking FIFA. Este puesto (1-48) es el que se promedia en la apuesta.</div>
+  <div id="tabla48-container"></div>
+</section>
+<footer>⚽ Mundial 2026 · Apuesta entre amigos · © 2026</footer>
+<script>
+const JUGADORES = [
+  { nombre:"Elías",  equipos:[["Alemania","🇩🇪","🏆"],["México","🇲🇽","⭐"],["Nueva Zelanda","🇳🇿","📈"],["Irán","🇮🇷","🌍"]] },
+  { nombre:"Jaime",  equipos:[["Croacia","🇭🇷","🏆"],["Turquía","🇹🇷","⭐"],["Australia","🇦🇺","📈"],["Haití","🇭🇹","🌍"]] },
+  { nombre:"Simón",  equipos:[["Argentina","🇦🇷","🏆"],["Canadá","🇨🇦","⭐"],["Argelia","🇩🇿","📈"],["Uzbekistán","🇺🇿","🌍"]] },
+  { nombre:"Achar",  equipos:[["Portugal","🇵🇹","🏆"],["Corea del Sur","🇰🇷","⭐"],["Escocia","🏴󠁧󠁢󠁳󠁣󠁴󠁿","📈"],["Túnez","🇹🇳","🌍"]] },
+  { nombre:"Fally",  equipos:[["Inglaterra","🏴󠁧󠁢󠁥󠁮󠁗󠁿","🏆"],["Colombia","🇨🇴","⭐"],["Costa de Marfil","🇨🇮","📈"],["Curazao","🇨🇼","🌍"]] },
+  { nombre:"Beche",  equipos:[["Marruecos","🇲🇦","🏆"],["Estados Unidos","🇺🇸","⭐"],["Austria","🇦🇹","📈"],["Sudáfrica","🇿🇦","🌍"]] },
+  { nombre:"Max",    equipos:[["Holanda","🇳🇱","🏆"],["Noruega","🇳🇴","⭐"],["Bosnia y Herz.","🇧🇦","📈"],["Irak","🇮🇶","🌍"]] },
+  { nombre:"Pepe",   equipos:[["Brasil","🇧🇷","🏆"],["Uruguay","🇺🇾","⭐"],["Arabia Saudita","🇸🇦","📈"],["Congo","🇨🇩","🌍"]] },
+  { nombre:"Eli",    equipos:[["España","🇪🇸","🏆"],["Ecuador","🇪🇨","⭐"],["Paraguay","🇵🇾","📈"],["Catar","🇶🇦","🌍"]] },
+  { nombre:"Alan",   equipos:[["Francia","🇫🇷","🏆"],["Suecia","🇸🇪","⭐"],["Egipto","🇪🇬","📈"],["Panamá","🇵🇦","🌍"]] },
+  { nombre:"Jona",   equipos:[["Bélgica","🇧🇪","🏆"],["Suiza","🇨🇭","⭐"],["Rep. Checa","🇨🇿","📈"],["Cabo Verde","🇨🇻","🌍"]] },
+  { nombre:"Daniel", equipos:[["Japón","🇯🇵","🏆"],["Senegal","🇸🇳","⭐"],["Ghana","🇬🇭","📈"],["Jordania","🇯🇴","🌍"]] },
+];
+const GRUPOS = {
+  A:[["México","🇲🇽"],["Corea del Sur","🇰🇷"],["Rep. Checa","🇨🇿"],["Sudáfrica","🇿🇦"]],
+  B:[["Suiza","🇨🇭"],["Canadá","🇨🇦"],["Catar","🇶🇦"],["Bosnia y Herz.","🇧🇦"]],
+  C:[["Brasil","🇧🇷"],["Marruecos","🇲🇦"],["Escocia","🏴󠁧󠁢󠁳󠁣󠁴󠁿"],["Haití","🇭🇹"]],
+  D:[["Estados Unidos","🇺🇸"],["Turquía","🇹🇷"],["Paraguay","🇵🇾"],["Australia","🇦🇺"]],
+  E:[["Alemania","🇩🇪"],["Ecuador","🇪🇨"],["Costa de Marfil","🇨🇮"],["Curazao","🇨🇼"]],
+  F:[["Holanda","🇳🇱"],["Japón","🇯🇵"],["Túnez","🇹🇳"],["Suecia","🇸🇪"]],
+  G:[["Bélgica","🇧🇪"],["Irán","🇮🇷"],["Egipto","🇪🇬"],["Nueva Zelanda","🇳🇿"]],
+  H:[["España","🇪🇸"],["Uruguay","🇺🇾"],["Arabia Saudita","🇸🇦"],["Cabo Verde","🇨🇻"]],
+  I:[["Francia","🇫🇷"],["Senegal","🇸🇳"],["Noruega","🇳🇴"],["Irak","🇮🇶"]],
+  J:[["Argentina","🇦🇷"],["Argelia","🇩🇿"],["Austria","🇦🇹"],["Jordania","🇯🇴"]],
+  K:[["Portugal","🇵🇹"],["Colombia","🇨🇴"],["Uzbekistán","🇺🇿"],["Congo","🇨🇩"]],
+  L:[["Inglaterra","🏴󠁧󠁢󠁥󠁮󠁗󠁿"],["Croacia","🇭🇷"],["Ghana","🇬🇭"],["Panamá","🇵🇦"]],
+};
+const PARTIDOS = [
+  {id:"A1",g:"A",h:["México","🇲🇽"],a:["Sudáfrica","🇿🇦"],j:1,d:"11 jun",hs:2,as:0},
+  {id:"A2",g:"A",h:["Corea del Sur","🇰🇷"],a:["Rep. Checa","🇨🇿"],j:1,d:"11 jun",hs:2,as:1},
+  {id:"B1",g:"B",h:["Canadá","🇨🇦"],a:["Bosnia y Herz.","🇧🇦"],j:1,d:"12 jun",hs:1,as:1},
+  {id:"B2",g:"B",h:["Catar","🇶🇦"],a:["Suiza","🇨🇭"],j:1,d:"13 jun",hs:1,as:1},
+  {id:"C1",g:"C",h:["Haití","🇭🇹"],a:["Escocia","🏴󠁧󠁢󠁳󠁣󠁴󠁿"],j:1,d:"13 jun",hs:0,as:1},
+  {id:"C2",g:"C",h:["Brasil","🇧🇷"],a:["Marruecos","🇲🇦"],j:1,d:"13 jun",hs:1,as:1},
+  {id:"D1",g:"D",h:["Estados Unidos","🇺🇸"],a:["Paraguay","🇵🇾"],j:1,d:"12 jun",hs:4,as:1},
+  {id:"D2",g:"D",h:["Australia","🇦🇺"],a:["Turquía","🇹🇷"],j:1,d:"14 jun",hs:2,as:0},
+  {id:"E1",g:"E",h:["Alemania","🇩🇪"],a:["Curazao","🇨🇼"],j:1,d:"14 jun",hs:7,as:1},
+  {id:"E2",g:"E",h:["Costa de Marfil","🇨🇮"],a:["Ecuador","🇪🇨"],j:1,d:"14 jun",hs:1,as:0},
+  {id:"F1",g:"F",h:["Holanda","🇳🇱"],a:["Japón","🇯🇵"],j:1,d:"14 jun",hs:2,as:2},
+  {id:"F2",g:"F",h:["Suecia","🇸🇪"],a:["Túnez","🇹🇳"],j:1,d:"14 jun",hs:5,as:1},
+  {id:"G1",g:"G",h:["Irán","🇮🇷"],a:["Nueva Zelanda","🇳🇿"],j:1,d:"15 jun",hs:2,as:2},
+  {id:"G2",g:"G",h:["Bélgica","🇧🇪"],a:["Egipto","🇪🇬"],j:1,d:"15 jun",hs:1,as:1},
+  {id:"H1",g:"H",h:["Arabia Saudita","🇸🇦"],a:["Uruguay","🇺🇾"],j:1,d:"15 jun",hs:1,as:1},
+  {id:"H2",g:"H",h:["España","🇪🇸"],a:["Cabo Verde","🇨🇻"],j:1,d:"15 jun",hs:0,as:0},
+  {id:"I1",g:"I",h:["Francia","🇫🇷"],a:["Senegal","🇸🇳"],j:1,d:"16 jun",hs:3,as:1},
+  {id:"I2",g:"I",h:["Irak","🇮🇶"],a:["Noruega","🇳🇴"],j:1,d:"16 jun",hs:1,as:4},
+  {id:"J1",g:"J",h:["Argentina","🇦🇷"],a:["Argelia","🇩🇿"],j:1,d:"16 jun",hs:3,as:0},
+  {id:"J2",g:"J",h:["Austria","🇦🇹"],a:["Jordania","🇯🇴"],j:1,d:"17 jun",hs:3,as:1},
+  {id:"K1",g:"K",h:["Portugal","🇵🇹"],a:["Congo","🇨🇩"],j:1,d:"17 jun",hs:1,as:1},
+  {id:"K2",g:"K",h:["Uzbekistán","🇺🇿"],a:["Colombia","🇨🇴"],j:1,d:"17 jun",hs:1,as:3},
+  {id:"L1",g:"L",h:["Ghana","🇬🇭"],a:["Panamá","🇵🇦"],j:1,d:"17 jun",hs:1,as:0},
+  {id:"L2",g:"L",h:["Inglaterra","🏴󠁧󠁢󠁥󠁮󠁗󠁿"],a:["Croacia","🇭🇷"],j:1,d:"17 jun",hs:4,as:2},
+  {id:"A3",g:"A",h:["Rep. Checa","🇨🇿"],a:["Sudáfrica","🇿🇦"],j:2,d:"18 jun",hs:1,as:1},
+  {id:"A4",g:"A",h:["México","🇲🇽"],a:["Corea del Sur","🇰🇷"],j:2,d:"18 jun",hs:1,as:0},
+  {id:"B3",g:"B",h:["Suiza","🇨🇭"],a:["Bosnia y Herz.","🇧🇦"],j:2,d:"18 jun",hs:4,as:1},
+  {id:"B4",g:"B",h:["Canadá","🇨🇦"],a:["Catar","🇶🇦"],j:2,d:"18 jun",hs:6,as:0},
+  {id:"C3",g:"C",h:["Escocia","🏴󠁧󠁢󠁳󠁣󠁴󠁿"],a:["Marruecos","🇲🇦"],j:2,d:"19 jun",hs:0,as:1},
+  {id:"C4",g:"C",h:["Brasil","🇧🇷"],a:["Haití","🇭🇹"],j:2,d:"19 jun",hs:3,as:0},
+  {id:"D3",g:"D",h:["Estados Unidos","🇺🇸"],a:["Australia","🇦🇺"],j:2,d:"19 jun",hs:2,as:0},
+  {id:"D4",g:"D",h:["Turquía","🇹🇷"],a:["Paraguay","🇵🇾"],j:2,d:"19 jun",hs:0,as:1},
+  {id:"E3",g:"E",h:["Alemania","🇩🇪"],a:["Costa de Marfil","🇨🇮"],j:2,d:"20 jun",hs:2,as:1},
+  {id:"E4",g:"E",h:["Ecuador","🇪🇨"],a:["Curazao","🇨🇼"],j:2,d:"20 jun",hs:0,as:0},
+  {id:"F3",g:"F",h:["Holanda","🇳🇱"],a:["Suecia","🇸🇪"],j:2,d:"20 jun",hs:5,as:1},
+  {id:"F4",g:"F",h:["Túnez","🇹🇳"],a:["Japón","🇯🇵"],j:2,d:"21 jun",hs:0,as:4},
+  {id:"G3",g:"G",h:["Bélgica","🇧🇪"],a:["Irán","🇮🇷"],j:2,d:"21 jun",hs:0,as:0},
+  {id:"G4",g:"G",h:["Nueva Zelanda","🇳🇿"],a:["Egipto","🇪🇬"],j:2,d:"21 jun",hs:1,as:3},
+  {id:"H3",g:"H",h:["España","🇪🇸"],a:["Arabia Saudita","🇸🇦"],j:2,d:"21 jun",hs:4,as:0},
+  {id:"H4",g:"H",h:["Uruguay","🇺🇾"],a:["Cabo Verde","🇨🇻"],j:2,d:"21 jun",hs:2,as:2},
+  {id:"I3",g:"I",h:["Francia","🇫🇷"],a:["Irak","🇮🇶"],j:2,d:"22 jun",hs:1,as:0},
+  {id:"I4",g:"I",h:["Noruega","🇳🇴"],a:["Senegal","🇸🇳"],j:2,d:"23 jun",hs:3,as:2},
+  {id:"J3",g:"J",h:["Argentina","🇦🇷"],a:["Austria","🇦🇹"],j:2,d:"22 jun",hs:1,as:0},
+  {id:"J4",g:"J",h:["Jordania","🇯🇴"],a:["Argelia","🇩🇿"],j:2,d:"22 jun",hs:1,as:2},
+  {id:"K3",g:"K",h:["Portugal","🇵🇹"],a:["Uzbekistán","🇺🇿"],j:2,d:"23 jun",hs:5,as:0},
+  {id:"K4",g:"K",h:["Colombia","🇨🇴"],a:["Congo","🇨🇩"],j:2,d:"23 jun",hs:1,as:0},
+  {id:"L3",g:"L",h:["Inglaterra","🏴󠁧󠁢󠁥󠁮󠁗󠁿"],a:["Ghana","🇬🇭"],j:2,d:"23 jun",hs:0,as:0},
+  {id:"L4",g:"L",h:["Panamá","🇵🇦"],a:["Croacia","🇭🇷"],j:2,d:"23 jun",hs:0,as:1},
+  {id:"A5",g:"A",h:["Sudáfrica","🇿🇦"],a:["Corea del Sur","🇰🇷"],j:3,d:"24 jun",hs:1,as:0},
+  {id:"A6",g:"A",h:["Rep. Checa","🇨🇿"],a:["México","🇲🇽"],j:3,d:"24 jun",hs:0,as:3},
+  {id:"B5",g:"B",h:["Bosnia y Herz.","🇧🇦"],a:["Catar","🇶🇦"],j:3,d:"24 jun",hs:3,as:1},
+  {id:"B6",g:"B",h:["Suiza","🇨🇭"],a:["Canadá","🇨🇦"],j:3,d:"24 jun",hs:2,as:1},
+  {id:"C5",g:"C",h:["Haití","🇭🇹"],a:["Marruecos","🇲🇦"],j:3,d:"24 jun",hs:2,as:4},
+  {id:"C6",g:"C",h:["Escocia","🏴󠁧󠁢󠁳󠁣󠁴󠁿"],a:["Brasil","🇧🇷"],j:3,d:"24 jun",hs:0,as:3},
+  {id:"D5",g:"D",h:["Paraguay","🇵🇾"],a:["Australia","🇦🇺"],j:3,d:"25 jun",hs:0,as:0},
+  {id:"D6",g:"D",h:["Turquía","🇹🇷"],a:["Estados Unidos","🇺🇸"],j:3,d:"25 jun",hs:3,as:2},
+  {id:"E5",g:"E",h:["Ecuador","🇪🇨"],a:["Alemania","🇩🇪"],j:3,d:"25 jun",hs:2,as:1},
+  {id:"E6",g:"E",h:["Curazao","🇨🇼"],a:["Costa de Marfil","🇨🇮"],j:3,d:"25 jun",hs:0,as:2},
+  {id:"F5",g:"F",h:["Japón","🇯🇵"],a:["Suecia","🇸🇪"],j:3,d:"25 jun",hs:1,as:1},
+  {id:"F6",g:"F",h:["Túnez","🇹🇳"],a:["Holanda","🇳🇱"],j:3,d:"26 jun",hs:1,as:3},
+  {id:"G5",g:"G",h:["Egipto","🇪🇬"],a:["Irán","🇮🇷"],j:3,d:"26 jun",hs:1,as:1},
+  {id:"G6",g:"G",h:["Nueva Zelanda","🇳🇿"],a:["Bélgica","🇧🇪"],j:3,d:"26 jun",hs:1,as:5},
+  {id:"H5",g:"H",h:["Cabo Verde","🇨🇻"],a:["Arabia Saudita","🇸🇦"],j:3,d:"26 jun",hs:0,as:0},
+  {id:"H6",g:"H",h:["Uruguay","🇺🇾"],a:["España","🇪🇸"],j:3,d:"26 jun",hs:0,as:1},
+  {id:"I5",g:"I",h:["Senegal","🇸🇳"],a:["Irak","🇮🇶"],j:3,d:"26 jun",hs:5,as:0},
+  {id:"I6",g:"I",h:["Noruega","🇳🇴"],a:["Francia","🇫🇷"],j:3,d:"26 jun",hs:1,as:4},
+  {id:"J5",g:"J",h:["Argelia","🇩🇿"],a:["Austria","🇦🇹"],j:3,d:"27 jun",hs:3,as:3},
+  {id:"J6",g:"J",h:["Jordania","🇯🇴"],a:["Argentina","🇦🇷"],j:3,d:"27 jun",hs:1,as:3},
+  {id:"K5",g:"K",h:["Congo","🇨🇩"],a:["Uzbekistán","🇺🇿"],j:3,d:"27 jun",hs:3,as:1},
+  {id:"K6",g:"K",h:["Colombia","🇨🇴"],a:["Portugal","🇵🇹"],j:3,d:"27 jun",hs:0,as:0},
+  {id:"L5",g:"L",h:["Croacia","🇭🇷"],a:["Ghana","🇬🇭"],j:3,d:"27 jun",hs:2,as:1},
+  {id:"L6",g:"L",h:["Panamá","🇵🇦"],a:["Inglaterra","🏴󠁧󠁢󠁥󠁮󠁗󠁿"],j:3,d:"27 jun",hs:0,as:2},
+];
+let scores = {};
+let ELIM_KO = new Set();   // equipos eliminados en fase final (se llena desde la API)
+
+const API_URLS = [
+  "/api/worldcup",
+  "https://cdn.jsdelivr.net/gh/openfootball/worldcup.json@master/2026/worldcup.json",
+  "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json"
+];
+
+// Mapa: nombre en inglés (openfootball) -> nombre en español (el de la app)
+const EN2ES = {
+  "mexico":"México","south africa":"Sudáfrica","south korea":"Corea del Sur","korea republic":"Corea del Sur",
+  "czechia":"Rep. Checa","czech republic":"Rep. Checa","switzerland":"Suiza","canada":"Canadá","qatar":"Catar",
+  "bosnia and herzegovina":"Bosnia y Herz.","bosnia herzegovina":"Bosnia y Herz.","bosnia":"Bosnia y Herz.","brazil":"Brasil","morocco":"Marruecos",
+  "scotland":"Escocia","haiti":"Haití","united states":"Estados Unidos","usa":"Estados Unidos","paraguay":"Paraguay",
+  "australia":"Australia","turkey":"Turquía","türkiye":"Turquía","germany":"Alemania","ivory coast":"Costa de Marfil",
+  "côte d'ivoire":"Costa de Marfil","cote d'ivoire":"Costa de Marfil","ecuador":"Ecuador","curacao":"Curazao","curaçao":"Curazao",
+  "netherlands":"Holanda","japan":"Japón","sweden":"Suecia","tunisia":"Túnez","belgium":"Bélgica","iran":"Irán",
+  "egypt":"Egipto","new zealand":"Nueva Zelanda","spain":"España","uruguay":"Uruguay","saudi arabia":"Arabia Saudita",
+  "cape verde":"Cabo Verde","cabo verde":"Cabo Verde","france":"Francia","senegal":"Senegal","norway":"Noruega",
+  "iraq":"Irak","argentina":"Argentina","algeria":"Argelia","austria":"Austria","jordan":"Jordania",
+  "portugal":"Portugal","colombia":"Colombia","uzbekistan":"Uzbekistán","congo dr":"Congo","dr congo":"Congo",
+  "congo":"Congo","england":"Inglaterra","croatia":"Croacia","ghana":"Ghana","panama":"Panamá"
+};
+function en2es(n){
+  if(!n) return n;
+  // match directo
+  if(EN2ES[n.toLowerCase().trim()]) return EN2ES[n.toLowerCase().trim()];
+  // match normalizado (quita acentos, &, símbolos)
+  const norm = n.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,' ').trim().replace(/\s+/g,' ');
+  for(const [en,es] of Object.entries(EN2ES)){
+    const enNorm = en.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,' ').trim().replace(/\s+/g,' ');
+    if(enNorm===norm) return es;
+  }
+  return n;
+}
+
+// Construye un mapa: "EquipoA|EquipoB" (normalizado, sin orden) -> id de PARTIDOS
+const PAIR2ID = {};
+function pairKey(a,b){ return [keyOf(a),keyOf(b)].sort().join('|'); }
+function buildPairIndex(){ PARTIDOS.forEach(p=>{ PAIR2ID[pairKey(p.h[0],p.a[0])]=p; }); }
+
+async function fetchLive() {
+  let data=null;
+  for(const url of API_URLS){
+    try {
+      const res = await fetch(url, {cache:"no-store"});
+      if(!res.ok) continue;
+      data = await res.json();
+      if(data && data.matches) break;
+    } catch(e){ /* probar siguiente URL */ }
+  }
+  if(!data || !data.matches){ console.warn('No se pudo obtener datos en vivo de ninguna fuente'); return false; }
+  try {
+    data.matches.forEach(mt=>{
+      if(!mt.score || !mt.score.ft) return; // sin jugar
+      const t1=en2es(mt.team1), t2=en2es(mt.team2);
+      const ft=mt.score.ft; // [golesT1, golesT2]
+      // ¿Es partido de grupos? buscar por el par de equipos
+      const partido = PAIR2ID[pairKey(t1,t2)];
+      if(partido){
+        // Orientar el marcador según quién es local en nuestro PARTIDOS
+        const t1EsLocal = keyOf(t1)===keyOf(partido.h[0]);
+        scores[partido.id] = t1EsLocal ? {h:ft[0],a:ft[1]} : {h:ft[1],a:ft[0]};
+      }
+      // ¿Es partido de R32? (num 73-88)
+      if(mt.num && mt.num>=73 && mt.num<=88){
+        const m = R32.find(x=>x.m===mt.num);
+        if(m){
+          const t1EsLocal = keyOf(t1)===keyOf(m.fix[0]);
+          const hs = t1EsLocal?ft[0]:ft[1], as = t1EsLocal?ft[1]:ft[0];
+          m.hs=hs; m.as=as;
+          // penales
+          if(mt.score.p){
+            const p1=mt.score.p[0], p2=mt.score.p[1];
+            const ganaT1 = p1>p2;
+            m.pens = t1EsLocal?[p1,p2]:[p2,p1];
+            m.pk = ganaT1 ? t1 : t2;
+          } else { delete m.pens; delete m.pk; }
+        }
+      }
+    });
+    recomputeElimKO();
+    return true;
+  } catch(e){ console.warn('fetchLive falló:', e.message); return false; }
+}
+
+function recomputeElimKO(){
+  ELIM_KO.clear();
+  R32.forEach(mt=>{
+    if(mt.hs!=null && mt.as!=null){
+      let perdedor;
+      if(mt.hs===mt.as && mt.pk) perdedor = (keyOf(mt.pk)===keyOf(mt.fix[0]))?mt.fix[1]:mt.fix[0];
+      else perdedor = mt.hs>mt.as ? mt.fix[1] : mt.fix[0];
+      ELIM_KO.add(keyOf(perdedor));
+    }
+  });
+}
+
+async function loadScores() {
+  // 1) precargar los resultados base que ya están en PARTIDOS (fase de grupos)
+  PARTIDOS.forEach(p => { if (p.hs!==null && p.as!==null) scores[p.id]={h:p.hs,a:p.as}; });
+  buildPairIndex();
+  // 2) traer datos en vivo desde la API (única fuente de resultados)
+  await fetchLive();
+}
+function normalizeKey(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,' ').trim().replace(/\s+/g,' '); }
+const ALIAS = { 'qatar':'catar','catar':'catar' };
+function keyOf(n){ const k=normalizeKey(n); return ALIAS[k]||k; }
+function computeStandings() {
+  const stats = {};
+  for (const [letra,equipos] of Object.entries(GRUPOS))
+    equipos.forEach(([nombre,bandera]) => { stats[keyOf(nombre)]={nombre,bandera,grupo:letra,pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0}; });
+  PARTIDOS.forEach(p => {
+    const s=scores[p.id]; if(!s||s.h==null||s.a==null||s.h===''||s.a==='') return;
+    const H=stats[keyOf(p.h[0])], A=stats[keyOf(p.a[0])]; if(!H||!A) return;
+    const hs=+s.h, as=+s.a;
+    H.pj++;A.pj++;H.gf+=hs;H.gc+=as;A.gf+=as;A.gc+=hs;
+    if(hs>as){H.g++;A.p++;H.pts+=3;} else if(hs<as){A.g++;H.p++;A.pts+=3;} else {H.e++;A.e++;H.pts++;A.pts++;}
+  });
+  const tablas={}, anyPlayed={};
+  for (const [letra,equipos] of Object.entries(GRUPOS)) {
+    const arr=equipos.map(([nombre],i)=>({...stats[keyOf(nombre)],fifaIdx:i}));
+    anyPlayed[letra]=arr.some(t=>t.pj>0);
+    arr.sort((a,b)=>{ if(b.pts!==a.pts)return b.pts-a.pts; const da=a.gf-a.gc,db=b.gf-b.gc;
+      if(db!==da)return db-da; if(b.gf!==a.gf)return b.gf-a.gf; return a.fifaIdx-b.fifaIdx; });
+    arr.forEach((t,i)=>t.pos=i+1); tablas[letra]=arr;
+  }
+  // ── TABLA GLOBAL 1-48 ──
+  // fifaGlobal = índice de ranking FIFA general (para desempate). Lo derivamos del orden
+  // en que aparecen los grupos y su posición FIFA dentro del grupo: cabezas de serie primero.
+  const todos = [];
+  for (const [letra,equipos] of Object.entries(GRUPOS))
+    equipos.forEach(([nombre],i)=> todos.push({...stats[keyOf(nombre)], fifaIdx:i, grupo:letra}));
+  // Asignar un peso de ranking FIFA aproximado: posición dentro del grupo + offset por grupo
+  // (los primeros sembrados de cada grupo son mejores que los segundos, etc.)
+  const ordenGrupos = Object.keys(GRUPOS);
+  todos.forEach(t => { t.fifaGlobal = t.fifaIdx*12 + ordenGrupos.indexOf(t.grupo); });
+  todos.sort((a,b)=>{
+    if(b.pts!==a.pts)return b.pts-a.pts;
+    const da=a.gf-a.gc, db=b.gf-b.gc;
+    if(db!==da)return db-da;
+    if(b.gf!==a.gf)return b.gf-a.gf;
+    return a.fifaGlobal-b.fifaGlobal; // desempate por ranking FIFA
+  });
+  todos.forEach((t,i)=> t.globalPos = i+1);
+  const global = {};
+  todos.forEach(t => { global[keyOf(t.nombre)] = t; });
+
+  // ── ESTATUS DE CLASIFICACIÓN ──
+  // ¿La fase de grupos terminó del todo? (los 72 partidos con marcador)
+  const totalPartidos = PARTIDOS.length;
+  const jugadosTotal = PARTIDOS.filter(p=>{const s=scores[p.id]; return s&&s.h!==''&&s.a!==''&&s.h!=null&&s.a!=null;}).length;
+  // Recolectar terceros de cada grupo
+  const terceros = [];
+  for (const [letra,arr] of Object.entries(tablas)) {
+    if (arr[2]) terceros.push({...arr[2], grupo:letra});
+  }
+  // Ordenar terceros por pts/dg/gf
+  terceros.sort((a,b)=>{ if(b.pts!==a.pts)return b.pts-a.pts; const da=a.gf-a.gc,db=b.gf-b.gc;
+    if(db!==da)return db-da; return b.gf-a.gf; });
+  const mejoresTerceros = new Set(terceros.slice(0,8).map(t=>keyOf(t.nombre)));
+
+  // Para cada equipo, determinar estatus
+  const estatus = {}; // key -> 'clasificado' | 'eliminado' | 'vivo'
+  for (const [letra,arr] of Object.entries(tablas)) {
+    const grupoCompleto = arr.every(t=>t.pj>=3);
+    arr.forEach((t,pos)=>{
+      const k=keyOf(t.nombre);
+      if (pos<2) {
+        // 1° y 2°: clasifican si el grupo terminó, si no, "vivo" (probable)
+        estatus[k] = grupoCompleto ? 'clasificado' : 'vivo';
+      } else if (pos===2) {
+        // 3°: depende de los mejores terceros
+        if (jugadosTotal===totalPartidos) estatus[k] = mejoresTerceros.has(k)?'clasificado':'eliminado';
+        else estatus[k] = 'vivo';
+      } else {
+        // 4°: eliminado si jugó sus 3, si no vivo
+        estatus[k] = (grupoCompleto) ? 'eliminado' : 'vivo';
+      }
+    });
+  }
+  return {tablas,stats,anyPlayed,global,globalList:todos,estatus,grupoCompleto:jugadosTotal===totalPartidos};
+}
+let CACHE=null;
+
+/* ── BRACKET ROUND OF 32 (cruces oficiales confirmados) ──
+   Cada slot: 'W'+letra = ganador grupo, 'R'+letra = subcampeón, '3X'=mejor tercero.
+   Donde el tercero aún no se define, dejamos texto descriptivo. */
+const R32 = [
+  {m:73, d:"28 jun", fix:["Sudáfrica","Canadá"]},
+  {m:74, d:"29 jun", fix:["Alemania","Paraguay"]},
+  {m:76, d:"29 jun", fix:["Brasil","Japón"]},
+  {m:75, d:"30 jun", fix:["Holanda","Marruecos"]},
+  {m:78, d:"30 jun", fix:["Costa de Marfil","Noruega"]},
+  {m:77, d:"30 jun", fix:["Francia","Suecia"]},
+  {m:79, d:"30 jun", fix:["México","Ecuador"]},
+  {m:80, d:"1 jul",  fix:["Inglaterra","Congo"]},
+  {m:81, d:"1 jul",  fix:["Bélgica","Senegal"]},
+  {m:82, d:"1 jul",  fix:["Estados Unidos","Bosnia y Herz."]},
+  {m:83, d:"2 jul",  fix:["España","Austria"]},
+  {m:84, d:"2 jul",  fix:["Portugal","Croacia"]},
+  {m:85, d:"2 jul",  fix:["Suiza","Argelia"]},
+  {m:86, d:"3 jul",  fix:["Australia","Egipto"]},
+  {m:87, d:"3 jul",  fix:["Argentina","Cabo Verde"]},
+  {m:88, d:"3 jul",  fix:["Colombia","Ghana"]},
+];
+
+// Mapa equipo (normalizado) -> nombre del jugador dueño
+const DUENO = {};
+JUGADORES.forEach(j => j.equipos.forEach(eq => { DUENO[keyOf(eq[0])] = j.nombre; }));
+
+// Resolver un slot del bracket a un equipo concreto usando las tablas calculadas
+function resolverSlot(ref, txt) {
+  if (!CACHE) return null;
+  if (ref==='3X') return null; // tercero indefinido aún
+  const tipo = ref[0]; // W o R
+  const letra = ref[1];
+  const tabla = CACHE.tablas[letra];
+  if (!tabla) return null;
+  const idx = tipo==='W'?0:1;
+  const t = tabla[idx];
+  // Solo damos por bueno si el grupo ya terminó (3 PJ)
+  if (!t || t.pj<3) return null;
+  return t;
+}
+function getStanding(nombre){
+  const k=keyOf(nombre); const grupo=CACHE.stats[k]?CACHE.stats[k].grupo:null;
+  if(!grupo) return {pos:4,globalPos:48,pj:0,pts:0,jugado:false,estatus:'vivo'};
+  const t=CACHE.tablas[grupo].find(x=>keyOf(x.nombre)===k);
+  const g=CACHE.global[k];
+  let est=CACHE.estatus[k]||'vivo';
+  // Si fue eliminado en fase final (KO), sobreescribe
+  if(ELIM_KO.has(k)) est='eliminado';
+  return {pos:t.pos,globalPos:g?g.globalPos:48,pj:t.pj,pts:t.pts,jugado:t.pj>0,grupo,estatus:est};
+}
+function renderRanking() {
+  const players=JUGADORES.map(j=>{
+    const poses=j.equipos.map(eq=>getStanding(eq[0]).globalPos);
+    const jugados=j.equipos.filter(eq=>getStanding(eq[0]).jugado).length;
+    const vivos=j.equipos.filter(eq=>getStanding(eq[0]).estatus!=='eliminado').length;
+    const avg=poses.reduce((a,b)=>a+b,0)/poses.length;
+    return {...j,avg:+avg.toFixed(1),jugados,vivos};
+  });
+  players.sort((a,b)=>a.avg-b.avg||b.vivos-a.vivos);
+  const grid=document.getElementById('ranking-grid'); grid.innerHTML='';
+  players.forEach((player,idx)=>{
+    const rank=idx+1;
+    const rc=rank===1?'rank-1':rank===2?'rank-2':rank===3?'rank-3':'rank-other';
+    const ri=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+    const teams=player.equipos.map(([nombre,bandera,tier])=>{
+      const s=getStanding(nombre); let label,cls,pill='';
+      if(s.jugado){label=`#${s.globalPos} · ${s.pts}pts`;cls='in-top';}
+      else {label=`~#${s.globalPos} est.`;cls='estimated';pill='pending';}
+      let badge='';
+      if(s.estatus==='clasificado') badge='<span class="qual-badge q-in">✓ Clasificado</span>';
+      else if(s.estatus==='eliminado'){ badge='<span class="qual-badge q-out">✗ Eliminado</span>'; pill='pending'; }
+      else if(s.jugado) badge='<span class="qual-badge q-live">● En disputa</span>';
+      return `<div class="team-pill ${pill}"><span class="tier-icon">${tier}</span><span class="team-flag">${bandera}</span><span class="team-name-pill">${nombre}</span>${badge}<span class="team-pos ${cls}">${label}</span></div>`;
+    }).join('');
+    const pct=Math.round(player.vivos/4*100);
+    const fillColor = player.vivos===4?'var(--green)':player.vivos>=2?'#FFB800':'var(--red)';
+    const note=player.jugados<4?`<div class="confidence-note">⚠ ${4-player.jugados} equipo(s) sin debutar — promedio provisional</div>`:'';
+    grid.innerHTML+=`<div class="player-card ${rc}"><div class="card-header"><div style="display:flex;align-items:center;gap:10px;"><div class="rank-badge">${ri}</div><div class="player-name">${player.nombre}</div></div><div class="avg-score"><div class="avg-number">${player.avg}</div><div class="avg-label">Prom. global /48</div></div></div><div class="team-pills">${teams}</div><div class="confidence"><div class="confidence-label"><span>Equipos aún vivos</span><span>${player.vivos}/4</span></div><div class="confidence-track"><div class="confidence-fill" style="width:${pct}%;background:${fillColor}"></div></div>${note}</div></div>`;
+  });
+}
+function renderGrupos() {
+  const cont=document.getElementById('groups-container'); cont.innerHTML='';
+  for (const [letra,arr] of Object.entries(CACHE.tablas)) {
+    const rows=arr.map((t,i)=>{
+      const qual=i<2&&CACHE.anyPlayed[letra];
+      return `<tr class="${qual?'qual':''}"><td><div class="team-cell"><span class="pos-num">${qual?'<span class=qual-dot></span>':''}${i+1}</span><span class="flag-sm">${t.bandera}</span><span class="team-cell-name">${t.nombre}</span></div></td><td>${t.pj}</td><td>${t.g}-${t.e}-${t.p}</td><td>${t.gf-t.gc>0?'+':''}${t.gf-t.gc}</td><td class="pts-cell">${t.pts}</td></tr>`;
+    }).join('');
+    cont.innerHTML+=`<div class="group-card"><div class="group-header"><div class="group-letter">${letra}</div><div class="group-sub">Grupo ${letra}</div></div><table class="group-table"><thead><tr><th>Equipo</th><th>PJ</th><th>G-E-P</th><th>DG</th><th>PTS</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+}
+function renderTabla48() {
+  const cont=document.getElementById('tabla48-container');
+  const rows=CACHE.globalList.map((t,i)=>{
+    const gpCls=i<8?'gp gp-top':'gp';
+    const dg=t.gf-t.gc;
+    return `<tr class="${i===31?'cut':''}"><td><span class="${gpCls}">${i+1}</span></td><td><div class="tnm"><span class="fl">${t.bandera}</span><span class="nm">${t.nombre}</span><span class="grp-tag">${t.grupo}</span></div></td><td>${t.pj}</td><td>${t.pts}</td><td>${dg>0?'+':''}${dg}</td></tr>`;
+  }).join('');
+  cont.innerHTML=`<table class="t48"><thead><tr><th>#</th><th>Equipo</th><th>PJ</th><th>PTS</th><th>DG</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function renderBracket() {
+  const cont=document.getElementById('bracket-container');
+  function teamHtml(nombre, score, esGanador, definido) {
+    const k=keyOf(nombre);
+    const dueno=DUENO[k];
+    const g=CACHE.global[k];
+    const bandera=g?g.bandera:'⚽';
+    const ownerHtml = dueno ? `<div class="owner">de <b>${dueno}</b></div>` : `<div class="owner">sin dueño</div>`;
+    const elim = definido && !esGanador;
+    const scoreHtml = definido ? `<span class="ko-score ${esGanador?'win':'lose'}">${score}</span>` : '';
+    return `<div class="ko-team ${elim?'ko-elim':''} ${definido&&esGanador?'ko-win':''}"><span class="alive ${elim?'no':'yes'}"></span><span class="fl">${bandera}</span><div class="info"><div class="nm">${nombre}</div>${ownerHtml}</div>${scoreHtml}</div>`;
+  }
+  const cards=R32.map(match=>{
+    const def = match.hs!=null && match.as!=null;
+    let gana0, gana1;
+    if(def && match.hs===match.as && match.pk){
+      gana0 = match.pk===match.fix[0];
+      gana1 = match.pk===match.fix[1];
+    } else {
+      gana0 = def && match.hs>match.as;
+      gana1 = def && match.as>match.hs;
+    }
+    const penTxt = match.pk ? ` · pen ${match.pens[0]}-${match.pens[1]}` : '';
+    return `<div class="ko-match">
+      <div class="ko-head"><span>Partido ${match.m}</span><span class="ko-date">${match.d}${def?' · FINAL'+penTxt:''}</span></div>
+      ${teamHtml(match.fix[0], match.hs, gana0, def)}
+      <div class="ko-vs">${def?'':'VS'}</div>
+      ${teamHtml(match.fix[1], match.as, gana1, def)}
+    </div>`;
+  }).join('');
+  cont.innerHTML = `<div class="bracket-grid">${cards}</div>`;
+}
+function recalcAll() {
+  CACHE=computeStandings(); renderRanking(); renderGrupos(); renderTabla48(); renderBracket(); updateProgress();
+  document.querySelector('.tab-btn').click();
+}
+function updateProgress() {
+  const jugadosR32 = R32.filter(mt=>mt.hs!=null && mt.as!=null).length;
+  document.getElementById('progress-pill').textContent=`🏆 Round of 32 · ${jugadosR32} de 16 partidos jugados`;
+}
+function showTab(id,btn) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  else document.querySelectorAll('.tab-btn').forEach(b=>{ if(b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active'); });
+}
+async function init() { await loadScores(); recalcAll(); }
+init();
+
+// Refresco en vivo cada 60 segundos
+setInterval(async ()=>{
+  const ok = await fetchLive();
+  if(ok){ recalcAll(); }
+}, 60000);
+</script>
+</body>
+</html>
