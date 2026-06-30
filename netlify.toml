@@ -1,5 +1,6 @@
 [[redirects]]
-  from = "/api/worldcup"
-  to = "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json"
+  from = "/"
+  to = "/índex.html"
   status = 200
   force = true
+  
